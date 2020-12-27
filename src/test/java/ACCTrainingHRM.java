@@ -13,49 +13,60 @@ import java.util.concurrent.TimeUnit;
 public class ACCTrainingHRM {
     @Test
     public void UserManagement() throws InterruptedException {
-        String url = "https://opensource-demo.orangehrmlive.com";
 
-        //Create an instance of webdriver
+        //Create an instance of WebDriver
         WebDriverManager.chromedriver().setup();
 
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, 10);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+
+        // Create an instance of login page
+        loginPage login = new loginPage(driver);
+        login.loginSuccess();
+
         //Login
-        driver.navigate().to(url);
-        driver.findElement(By.id("txtUsername")).sendKeys("admin");
-        driver.findElement(By.id("txtPassword")).sendKeys("admin123");
-        driver.findElement(By.id("btnLogin")).click();
+//        driver.navigate().to("https://opensource-demo.orangehrmlive.com");
+//        driver.findElement(By.id("txtUsername")).sendKeys("admin");
+//        driver.findElement(By.id("txtPassword")).sendKeys("admin123");
+//        driver.findElement(By.id("btnLogin")).click();
 
         //Click admin -> add user
-        driver.findElement(By.id("menu_admin_viewAdminModule")).click();
-        driver.findElement(By.xpath("//input[@id='btnAdd']")).click();
+        dashboardPage dash = new dashboardPage(driver);
+        dash.clickAdmin();
+        dash.clickAdd();
+
+//        driver.findElement(By.xpath("//input[@id='btnAdd']")).click();
 
         //Add user
-        WebElement userForm = driver.findElement(By.xpath("//*[@id=\"frmSystemUser\"]"));
+        systemUserForm systemUser = new systemUserForm(driver);
+        systemUser.addNew();
 
-        Select userRoleSelect = new Select(userForm.findElement(By.xpath("//select[@id='systemUser_userType']")));
-        userRoleSelect.selectByValue("1");
 
-        userForm.findElement(By.id("systemUser_employeeName_empName")).sendKeys("Anthony Nolan");
-        int rand = new Random().nextInt(10000);
-        String newUserName = "FangTest" + rand;
-        userForm.findElement(By.id("systemUser_userName")).sendKeys(newUserName);
-        Select status = new Select(userForm.findElement(By.id("systemUser_status")));
-        status.selectByVisibleText("Disabled");
-        userForm.findElement(By.id("systemUser_password")).sendKeys(newUserName + newUserName);
-        userForm.findElement(By.id("systemUser_confirmPassword")).sendKeys(newUserName + newUserName);
-        Thread.sleep(2000);
-        userForm.findElement(By.id("btnSave")).click();
+//        WebElement userForm = driver.findElement(By.xpath("//*[@id=\"frmSystemUser\"]"));
+//
+//        Select userRoleSelect = new Select(userForm.findElement(By.xpath("//select[@id='systemUser_userType']")));
+//        userRoleSelect.selectByValue("1");
+//
+//        userForm.findElement(By.id("systemUser_employeeName_empName")).sendKeys("Anthony Nolan");
+//        int rand = new Random().nextInt(10000);
+//        String newUserName = "FangTest" + rand;
+//        userForm.findElement(By.id("systemUser_userName")).sendKeys(newUserName);
+//        Select status = new Select(userForm.findElement(By.id("systemUser_status")));
+//        status.selectByVisibleText("Disabled");
+//        userForm.findElement(By.id("systemUser_password")).sendKeys(newUserName + newUserName);
+//        userForm.findElement(By.id("systemUser_confirmPassword")).sendKeys(newUserName + newUserName);
+//        Thread.sleep(2000);
+//        userForm.findElement(By.id("btnSave")).click();
 
 //      assert if new user is created
-        driver.findElement(By.id("searchSystemUser_userName")).sendKeys(newUserName);
-        driver.findElement(By.id("searchBtn")).click();
+//        driver.findElement(By.id("searchSystemUser_userName")).sendKeys(newUserName);
+//        driver.findElement(By.id("searchBtn")).click();
 
 
         WebElement resultTable = driver.findElement(By.id("resultTable"));
-        Assert.assertTrue(resultTable.getText().contains(newUserName));
+        Assert.assertTrue(resultTable.getText().contains(""));
 
         //Delete the created user
         WebElement selectNewUser = resultTable.findElement(By.tagName("input"));
